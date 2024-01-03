@@ -10,7 +10,7 @@ import {
   BackButton,
 } from "@vkruglikov/react-telegram-web-app";
 import type { RadioChangeEvent } from "antd";
-import { Input, Radio, Space } from "antd";
+import { App, Input, Radio, Space } from "antd";
 
 export function TransferTon() {
   const { sender, connected } = useTonConnect();
@@ -140,7 +140,7 @@ export function TransferTon() {
                   setApply(true);
                 }}
               >
-                Join to Airdrop
+                Participate
               </Button>
             )}
           </div>
@@ -175,12 +175,21 @@ export function TransferTon() {
         </Button> */}
         </FlexBoxCol>
       </Card>
-      <MainButton
-        text="Participate"
-        onClick={() => {
-          setApply(false);
-        }}
-      />
+      {showMainBtn && (
+        <MainButton
+          text="Pay & Complete"
+          onClick={() => {
+            setApply(false);
+          }}
+        />
+      )}
+      {apply && (
+        <BackButton
+          onClick={() => {
+            setApply(false);
+          }}
+        />
+      )}
     </WebAppProvider>
   );
 }
