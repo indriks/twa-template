@@ -9,6 +9,8 @@ import { useTonConnect } from "./hooks/useTonConnect";
 import { CHAIN } from "@tonconnect/protocol";
 import "@twa-dev/sdk";
 import BtnDemo from "./components/btnDemo";
+import { ConfigProvider, theme } from "antd";
+import { useThemeParams } from "@vkruglikov/react-telegram-web-app";
 
 const StyledApp = styled.div`
   background-color: #e8e8e8;
@@ -31,27 +33,45 @@ const AppContainer = styled.div`
 
 function App() {
   const { network } = useTonConnect();
+  const [colorScheme, themeParams] = useThemeParams();
 
   return (
     <StyledApp>
-      <AppContainer>
-        <FlexBoxCol>
-          <FlexBoxRow>
-            <TonConnectButton />
-            <Button>
-              {network
-                ? network === CHAIN.MAINNET
-                  ? "mainnet"
-                  : "testnet"
-                : "N/A"}
-            </Button>
-          </FlexBoxRow>
-          {/* <Counter /> */}
-          <TransferTon />
-          {/* <Jetton /> */}
-        </FlexBoxCol>
-      </AppContainer>
-      <BtnDemo />
+      <ConfigProvider
+        theme={
+          themeParams.text_color
+            ? {
+                algorithm:
+                  colorScheme === "dark"
+                    ? theme.darkAlgorithm
+                    : theme.defaultAlgorithm,
+                token: {
+                  colorText: themeParams.text_color,
+                  colorPrimary: themeParams.button_color,
+                  colorBgBase: themeParams.bg_color,
+                },
+              }
+            : undefined
+        }
+      >
+        <AppContainer>
+          <FlexBoxCol>
+            <FlexBoxRow>
+              <TonConnectButton />
+              <Button>
+                {network
+                  ? network === CHAIN.MAINNET
+                    ? "mainnet"
+                    : "testnet"
+                  : "N/A"}
+              </Button>
+            </FlexBoxRow>
+            {/* <Counter /> */}
+            <TransferTon />
+            {/* <Jetton /> */}
+          </FlexBoxCol>
+        </AppContainer>
+      </ConfigProvider>
     </StyledApp>
   );
 }
