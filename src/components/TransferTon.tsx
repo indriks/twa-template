@@ -42,7 +42,7 @@ export function TransferTon() {
   };
 
   useEffect(() => {
-    setShowMainBtn(true);
+    tier! >= 0 && setShowMainBtn(true);
   }, [tier]);
 
   return (
