@@ -3,3 +3,6 @@
   --tg-theme-button-color: #2eaddc;
   --tg-theme-button-text-color: white;
 }
+body{
+  font-family: 'Inter', sans-serif;
+}
