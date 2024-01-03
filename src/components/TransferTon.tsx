@@ -4,7 +4,11 @@ import { Address, toNano } from "ton";
 import { useTonConnect } from "../hooks/useTonConnect";
 import { Card, FlexBoxCol, FlexBoxRow, Button, Input } from "./styled/styled";
 import imgUrl from "/ton-header.jpg";
-import { MainButton, useShowPopup } from "@vkruglikov/react-telegram-web-app";
+import {
+  WebAppProvider,
+  MainButton,
+  BackButton,
+} from "@vkruglikov/react-telegram-web-app";
 
 export function TransferTon() {
   const { sender, connected } = useTonConnect();
@@ -22,7 +26,11 @@ export function TransferTon() {
   ];
 
   return (
-    <div>
+    <WebAppProvider
+      options={{
+        smoothButtonsTransition: true,
+      }}
+    >
       <Card>
         <FlexBoxCol>
           <img src={imgUrl} className="rounded-lg"></img>
@@ -58,7 +66,6 @@ export function TransferTon() {
                 className="w-full"
                 onClick={() => {
                   setApply(true);
-                  setShowMainBtn(true);
                 }}
               >
                 Apply for Airdrop
@@ -96,7 +103,12 @@ export function TransferTon() {
         </Button> */}
         </FlexBoxCol>
       </Card>
-      <MainButton text="Participate" />
-    </div>
+      <MainButton
+        text="Participate"
+        onClick={() => {
+          setApply(false);
+        }}
+      />
+    </WebAppProvider>
   );
 }
