@@ -15,15 +15,17 @@ const StyledApp = styled.div`
 
   @media (prefers-color-scheme: dark) {
     background-color: #222;
+    background: url("bg.jpg");
+    background-size: cover;
     color: white;
   }
   min-height: 100vh;
-  padding: 20px 20px;
 `;
 
 const AppContainer = styled.div`
   max-width: 900px;
-  margin: 0 auto;
+  margin: auto;
+  padding: 10px;
 `;
 
 function App() {
@@ -43,9 +45,9 @@ function App() {
                 : "N/A"}
             </Button>
           </FlexBoxRow>
-          <Counter />
+          {/* <Counter /> */}
           <TransferTon />
-          <Jetton />
+          {/* <Jetton /> */}
         </FlexBoxCol>
       </AppContainer>
     </StyledApp>
