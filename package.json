@@ -14,6 +14,7 @@
     "@tanstack/react-query": "^4.24.4",
     "@tonconnect/ui-react": "^2.0.0-beta.2",
     "@twa-dev/sdk": "^6.4.2",
+    "@vkruglikov/react-telegram-web-app": "^2.1.9",
     "buffer": "^6.0.3",
     "is-mobile": "^3.1.1",
     "react": "^18.2.0",
