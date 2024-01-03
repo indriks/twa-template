@@ -187,6 +187,7 @@ export function TransferTon() {
         <BackButton
           onClick={() => {
             setApply(false);
+            setShowMainBtn(false);
           }}
         />
       )}
