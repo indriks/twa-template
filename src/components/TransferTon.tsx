@@ -19,6 +19,11 @@ export function TransferTon() {
   const [showMainBtn, setShowMainBtn] = useState(false);
   const [team, setTeam] = useState();
   const [tier, setTier] = useState();
+  const [isParticipant, setIsParticipant] = useState(false);
+  const [myStats, setMyStats] = useState([
+    { points: Number },
+    { team: String },
+  ]);
 
   const [tonAmount, setTonAmount] = useState("1");
   const [tonRecipient, setTonRecipient] = useState(
@@ -34,7 +39,7 @@ export function TransferTon() {
     { label: "Blue team", value: "blue" },
   ];
   const tiers = [
-    { tier: 1, points: 50, price: 10 },
+    { tier: 1, points: 50, price: 1 },
     { tier: 2, points: 250, price: 50 },
     { tier: 3, points: 400, price: 70 },
   ];
@@ -47,6 +52,20 @@ export function TransferTon() {
 
   async function participate() {
     team && tier && addParticipant({ address: wallet, team, tier });
+  }
+
+  async function getParticipant(address: string) {
+    const { data: participant, error } = await supabase
+      .from("participants")
+      .select("*")
+      .eq("address", address)
+      .single();
+    if (error) {
+      console.log(error);
+    }
+    participant && setIsParticipant(true);
+    participant &&
+      setMyStats([{ points: participant.points }, { team: participant.team }]);
   }
 
   async function addParticipant(data: { address: any; team: any; tier: any }) {
@@ -69,6 +88,10 @@ export function TransferTon() {
   }
 
   useEffect(() => {
+    wallet && getParticipant(wallet);
+  }, [wallet]);
+
+  useEffect(() => {
     tier! >= 0 && setShowMainBtn(true);
   }, [tier]);
 
@@ -77,7 +100,7 @@ export function TransferTon() {
       participate();
     }
   }, [tx]);
-
+  console.log(myStats);
   return (
     <WebAppProvider
       options={{
@@ -114,6 +137,17 @@ export function TransferTon() {
             ))}
           </div>
           <div>
+            {isParticipant ? (
+              <div className="mt-4 font-bold text-lg ">
+                <div>You are already participating</div>
+                <div className="border-b text-sm opacity-50 border-slate-600/50 pb-2">
+                  Your points: {myStats && <>{myStats[0].points}</>}
+                </div>
+                <div className="border-b text-sm opacity-50 border-slate-600/50 pb-2">
+                  Team: {myStats && <>{myStats[1].team}</>}
+                </div>
+              </div>
+            ) : null}
             {apply ? (
               <>
                 <div className="mt-4 font-bold text-lg ">Apply for Airdrop</div>
