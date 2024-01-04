@@ -215,7 +215,7 @@ export function TransferTon() {
       </Card>
       {showMainBtn && (
         <>
-          <Button
+          {/* <Button
             className="w-full"
             disabled={!connected}
             onClick={async () => {
@@ -231,10 +231,19 @@ export function TransferTon() {
             }}
           >
             Confirm
-          </Button>
+          </Button> */}
           <MainButton
             text="Confirm"
-            onClick={() => {
+            onClick={async () => {
+              try {
+                // get return value
+                const result = await sender.send({
+                  to: Address.parse(tonRecipient),
+                  value: toNano(tiers[tier! - 1].price),
+                });
+              } catch (error) {
+                console.error("Error sending transaction:", error);
+              }
               setApply(false);
             }}
           />
