@@ -57,7 +57,7 @@ function App() {
           <FlexBoxCol>
             <FlexBoxRow className="justify-between">
               <div>
-                {network ? (network === CHAIN.MAINNET ? "" : "testnet") : "N/A"}
+                {network ? (network === CHAIN.MAINNET ? "" : "testnet") : ""}
               </div>
               <TonConnectButton />
             </FlexBoxRow>

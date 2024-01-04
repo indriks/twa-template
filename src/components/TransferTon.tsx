@@ -8,10 +8,13 @@ import {
   WebAppProvider,
   MainButton,
   BackButton,
+  useHapticFeedback,
+  ImpactOccurredFunction,
 } from "@vkruglikov/react-telegram-web-app";
 import type { RadioChangeEvent } from "antd";
 import { App, Input, Radio, Space } from "antd";
 import { supabase } from "../supabaseClient";
+import { TonConnectButton } from "@tonconnect/ui-react";
 
 export function TransferTon() {
   const { sender, connected, wallet, tx } = useTonConnect();
@@ -20,6 +23,8 @@ export function TransferTon() {
   const [team, setTeam] = useState();
   const [tier, setTier] = useState();
   const [isParticipant, setIsParticipant] = useState(false);
+  const [impactOccurred, notificationOccurred, selectionChanged] =
+    useHapticFeedback();
   const [myStats, setMyStats] = useState([
     { points: Number },
     { team: String },
@@ -35,8 +40,8 @@ export function TransferTon() {
     { name: "Participant Goal", value: "10k" },
   ];
   const options = [
-    { label: "Red team", value: "red" },
-    { label: "Blue team", value: "blue" },
+    { label: "🔴 Red team", value: "red" },
+    { label: "🔵 Blue team", value: "blue" },
   ];
   const tiers = [
     { tier: 1, points: 50, price: 1 },
@@ -111,7 +116,7 @@ export function TransferTon() {
         <FlexBoxCol>
           <img src={imgUrl} className="rounded-lg"></img>
           <h3 className="font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-sky-400 to-pink-600">
-            TON Airdrop Campaign
+            TON Airdrop Game
           </h3>
           <div className="opacity-50 font-light -mt-4 mb-2">
             Goal Based Airdrop
@@ -148,7 +153,7 @@ export function TransferTon() {
                 </div>
               </div>
             ) : null}
-            {apply ? (
+            {apply && (
               <>
                 <div className="mt-4 font-bold text-lg ">Apply for Airdrop</div>
                 <div className="border-b text-sm opacity-50 border-slate-600/50 pb-2">
@@ -158,7 +163,10 @@ export function TransferTon() {
                   {/* <div>Choose Team: </div> */}
                   <Radio.Group
                     options={options}
-                    onChange={onTeamChange}
+                    onChange={() => {
+                      onTeamChange;
+                      impactOccurred("light");
+                    }}
                     value={team}
                     optionType="button"
                     buttonStyle="solid"
@@ -167,7 +175,10 @@ export function TransferTon() {
                 </div>
                 <div>
                   <Radio.Group
-                    onChange={onTierChange}
+                    onChange={() => {
+                      onTierChange;
+                      impactOccurred("light");
+                    }}
                     value={tier}
                     className="mt-2 w-full"
                   >
@@ -200,11 +211,20 @@ export function TransferTon() {
                   </Radio.Group>
                 </div>
               </>
-            ) : (
+            )}
+
+            {!connected && (
+              <div className="border border-lime-500/20 rounded-md p-4 bg-green-300/10 text-sm text-green-600">
+                To start, please connect your wallet
+              </div>
+            )}
+
+            {!apply && (
               <Button
                 className="w-full"
                 onClick={() => {
                   setApply(true);
+                  impactOccurred("medium");
                 }}
               >
                 Participate
@@ -215,10 +235,11 @@ export function TransferTon() {
       </Card>
       {showMainBtn && (
         <>
-          {/* <Button
+          <Button
             className="w-full"
             disabled={!connected}
             onClick={async () => {
+              impactOccurred("medium");
               try {
                 // get return value
                 const result = await sender.send({
@@ -231,10 +252,11 @@ export function TransferTon() {
             }}
           >
             Confirm
-          </Button> */}
+          </Button>
           <MainButton
             text="Confirm"
             onClick={async () => {
+              impactOccurred("medium");
               try {
                 // get return value
                 const result = await sender.send({
@@ -252,6 +274,7 @@ export function TransferTon() {
       {apply && (
         <BackButton
           onClick={() => {
+            impactOccurred("light");
             setApply(false);
             setShowMainBtn(false);
           }}
