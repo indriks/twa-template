@@ -19,6 +19,12 @@ import ProgressBar from "./ProgressBar";
 import Flag from "./flag";
 import SpoilerText from "./SpoilerText/SpoilerText";
 
+interface MyStat {
+  points: number;
+  team: "blue" | "red";
+  tier: number;
+}
+
 export function TransferTon() {
   const { sender, connected, wallet, tx } = useTonConnect();
   const [apply, setApply] = useState(false);
@@ -28,10 +34,7 @@ export function TransferTon() {
   const [isParticipant, setIsParticipant] = useState(false);
   const [impactOccurred, notificationOccurred, selectionChanged] =
     useHapticFeedback();
-  const [myStats, setMyStats] = useState([
-    { points: Number },
-    { team: String },
-  ]);
+  const [myStats, setMyStats] = useState<MyStat[]>();
 
   const [tonAmount, setTonAmount] = useState("1");
   const [tonRecipient, setTonRecipient] = useState(
@@ -78,7 +81,13 @@ export function TransferTon() {
     }
     participant && setIsParticipant(true);
     participant &&
-      setMyStats([{ points: participant.points }, { team: participant.team }]);
+      setMyStats([
+        {
+          points: participant.points,
+          team: participant.team,
+          tier: participant.tier,
+        },
+      ]);
   }
 
   async function addParticipant(data: { address: any; team: any; tier: any }) {
@@ -113,7 +122,7 @@ export function TransferTon() {
       participate();
     }
   }, [tx]);
-  console.log(myStats);
+
   return (
     <WebAppProvider
       options={{
@@ -166,7 +175,7 @@ export function TransferTon() {
               </div>
             </div>
             <ProgressBar progress={50} demo></ProgressBar>
-            <div className="flex justify-between">
+            <div className="flex justify-between mt-3">
               <div>
                 <div className="font-bold text-red-400">Team red</div>
                 <div className="border-0 rounded-md text-center -mt-2 flex gap-2 align-middle">
@@ -274,16 +283,34 @@ export function TransferTon() {
         </FlexBoxCol>
       </Card>
 
-      {isParticipant ? (
+      {isParticipant && myStats ? (
         <Card>
           <FlexBoxCol>
-            <div className="mt-4 font-bold text-lg ">
-              <div>You are already participating</div>
-              <div className="border-b text-sm opacity-50 border-slate-600/50 pb-2">
-                Your points: {myStats && <>{myStats[0].points}</>}
+            <h3
+              className={`font-extrabold text-transparent text-2xl bg-clip-text bg-gradient-to-r from-sky-400 to-pink-600`}
+            >
+              My Account
+            </h3>
+            <div className="mb-2">
+              <div className="p-4 bg-red-500/20 rounded-full w-14 m-auto ">
+                {myStats && <Flag team={myStats[0].team}></Flag>}
               </div>
-              <div className="border-b text-sm opacity-50 border-slate-600/50 pb-2">
-                Team: {myStats && <>{myStats[1].team}</>}
+              <div>
+                <div className="flex flex-col gap-2">
+                  <div className="text-center text-xl">
+                    <span>{myStats && myStats[0].points} </span>
+                    <span className="font-light">airdrop points</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="border rounded-lg p-2 flex gap-2 border-slate-500/50 bg-slate-700/20">
+              <div>
+                <div className="text-lg">
+                  +{tiers[myStats[0].tier - 1].points} points
+                </div>
+                <div className="text-sm text-slate-500">per each referral</div>
               </div>
             </div>
           </FlexBoxCol>

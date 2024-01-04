@@ -18,7 +18,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
       interval = setInterval(() => {
         // Simulate infinite animation between 35% and 65%
         setAnimatedProgress((prevProgress) =>
-          prevProgress === 70 ? 30 : prevProgress + 1
+          prevProgress === 90 ? 10 : prevProgress + 1
         );
       }, 50);
     }
