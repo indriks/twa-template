@@ -1,0 +1,36 @@
+
+.spoiler {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+}
+
+.text {
+  font-size: 12px;
+  font-family: poppins;
+  color: white;
+  opacity: 0;
+}
+
+.hide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  max-width: 400px;
+  transition: 0.35s;
+  overflow: hidden;
+}
+
+.dot {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+}
+
+/* .spoiler:hover .hide {
+  max-width: 0;
+  background: transparent;
+} */

@@ -15,6 +15,9 @@ import type { RadioChangeEvent } from "antd";
 import { App, Input, Radio, Space } from "antd";
 import { supabase } from "../supabaseClient";
 import { TonConnectButton } from "@tonconnect/ui-react";
+import ProgressBar from "./ProgressBar";
+import Flag from "./flag";
+import SpoilerText from "./SpoilerText/SpoilerText";
 
 export function TransferTon() {
   const { sender, connected, wallet, tx } = useTonConnect();
@@ -36,7 +39,12 @@ export function TransferTon() {
   );
 
   const stats = [
-    { name: "Payout Pool", value: "80 000", unit: "TON" },
+    {
+      name: "Payout Pool",
+      value: "80 000",
+      unit: "TON",
+      dollars: "~$ 180 000",
+    },
     { name: "Participant Goal", value: "10k" },
   ];
   const options = [
@@ -125,7 +133,7 @@ export function TransferTon() {
             {stats.map((stat) => (
               <div
                 key={stat.name}
-                className="bg-gray-900 px-4 py-6 sm:px-6 lg:px-8"
+                className="bg-gray-900 px-4 py-2 sm:px-6 lg:px-8"
               >
                 <p className="text-sm font-medium leading-6 text-gray-400">
                   {stat.name}
@@ -138,21 +146,56 @@ export function TransferTon() {
                     <span className="text-sm text-gray-400">{stat.unit}</span>
                   ) : null}
                 </p>
+                {stat.dollars ? (
+                  <span className="text-sm text-green-400 ">
+                    {stat.dollars}
+                  </span>
+                ) : null}
               </div>
             ))}
           </div>
+
           <div>
-            {isParticipant ? (
-              <div className="mt-4 font-bold text-lg ">
-                <div>You are already participating</div>
-                <div className="border-b text-sm opacity-50 border-slate-600/50 pb-2">
-                  Your points: {myStats && <>{myStats[0].points}</>}
-                </div>
-                <div className="border-b text-sm opacity-50 border-slate-600/50 pb-2">
-                  Team: {myStats && <>{myStats[1].team}</>}
+            <div className="flex justify-between mt-2">
+              <div>
+                <Flag team="red" />
+              </div>
+              <div>⚔️</div>
+              <div>
+                <Flag team="blue" />
+              </div>
+            </div>
+            <ProgressBar progress={50} demo></ProgressBar>
+            <div className="flex justify-between">
+              <div>
+                <div className="font-bold text-red-400">Team red</div>
+                <div className="border-0 rounded-md text-center -mt-2 flex gap-2 align-middle">
+                  <div className="text-sm text-slate-100 m-auto mt-2">
+                    Total points:
+                  </div>
+                  <div className="m-auto mb-0">
+                    <SpoilerText />
+                  </div>
                 </div>
               </div>
-            ) : null}
+
+              <div>
+                <div className="font-bold text-blue-400 text-right">
+                  Team blue
+                </div>
+                <div className="border-0 rounded-md text-center -mt-2 flex gap-2 align-middle">
+                  <div className="text-sm text-slate-100 m-auto mt-2">
+                    Total points:
+                  </div>
+                  <div className="m-auto mb-0">
+                    <SpoilerText />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
             {apply && (
               <>
                 <div className="mt-4 font-bold text-lg ">Apply for Airdrop</div>
@@ -169,18 +212,12 @@ export function TransferTon() {
                     optionType="button"
                     buttonStyle="solid"
                     className="mt-2 w-full"
-                    onFocus={() => {
-                      impactOccurred("light");
-                    }}
                   />
                 </div>
                 <div>
                   <Radio.Group
                     onChange={() => {
                       onTierChange;
-                    }}
-                    onFocus={() => {
-                      impactOccurred("light");
                     }}
                     value={tier}
                     className="mt-2 w-full"
@@ -222,7 +259,7 @@ export function TransferTon() {
               </div>
             )}
 
-            {!apply && connected && (
+            {!apply && connected && !isParticipant && (
               <Button
                 className="w-full"
                 onClick={() => {
@@ -236,6 +273,23 @@ export function TransferTon() {
           </div>
         </FlexBoxCol>
       </Card>
+
+      {isParticipant ? (
+        <Card>
+          <FlexBoxCol>
+            <div className="mt-4 font-bold text-lg ">
+              <div>You are already participating</div>
+              <div className="border-b text-sm opacity-50 border-slate-600/50 pb-2">
+                Your points: {myStats && <>{myStats[0].points}</>}
+              </div>
+              <div className="border-b text-sm opacity-50 border-slate-600/50 pb-2">
+                Team: {myStats && <>{myStats[1].team}</>}
+              </div>
+            </div>
+          </FlexBoxCol>
+        </Card>
+      ) : null}
+
       {showMainBtn && (
         <>
           <Button

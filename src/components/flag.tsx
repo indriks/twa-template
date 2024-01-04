@@ -9,7 +9,11 @@ const Flag = (props: FlagProps) => {
   const color = props.team === "red" ? "#ff0000" : "#0000ff";
   return (
     <svg
-      className={props.className ? props.className : "w-6 h-6"}
+      className={
+        props.className
+          ? props.className
+          : `w-6 h-6 ${props.team === "blue" && " -scale-x-100"}`
+      }
       viewBox="0 0 79 116"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
