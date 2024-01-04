@@ -11,17 +11,18 @@ import {
 } from "@vkruglikov/react-telegram-web-app";
 import type { RadioChangeEvent } from "antd";
 import { App, Input, Radio, Space } from "antd";
+import { supabase } from "../supabaseClient";
 
 export function TransferTon() {
-  const { sender, connected } = useTonConnect();
+  const { sender, connected, wallet, tx } = useTonConnect();
   const [apply, setApply] = useState(false);
   const [showMainBtn, setShowMainBtn] = useState(false);
   const [team, setTeam] = useState();
   const [tier, setTier] = useState();
 
-  const [tonAmount, setTonAmount] = useState("0.01");
+  const [tonAmount, setTonAmount] = useState("1");
   const [tonRecipient, setTonRecipient] = useState(
-    "UQAaccjM7AcRI9aJhSOEMb292QCWeZWjJ0RuahXrmHKUfxPj"
+    "0QAaccjM7AcRI9aJhSOEMb292QCWeZWjJ0RuahXrmHKUf6hp"
   );
 
   const stats = [
@@ -33,17 +34,44 @@ export function TransferTon() {
     { label: "Blue team", value: "blue" },
   ];
   const onTeamChange = ({ target: { value } }: RadioChangeEvent) => {
-    console.log("radio1 checked", value);
     setTeam(value);
   };
   const onTierChange = (e: RadioChangeEvent) => {
-    console.log("radio checked", e.target.value);
     setTier(e.target.value);
   };
+
+  async function participate() {
+    team && tier && addParticipant({ address: wallet, team, tier });
+  }
+
+  async function addParticipant(data: { address: any; team: any; tier: any }) {
+    const { data: participant, error } = await supabase
+      .from("participants")
+      .insert([
+        {
+          address: data.address,
+          team: data.team,
+          tier: data.tier,
+          points: 0,
+          referrals: 0,
+          paid: false,
+        },
+      ]);
+    if (error) {
+      console.log(error);
+    }
+    setApply(false);
+  }
 
   useEffect(() => {
     tier! >= 0 && setShowMainBtn(true);
   }, [tier]);
+
+  useEffect(() => {
+    if (tx !== null) {
+      participate();
+    }
+  }, [tx]);
 
   return (
     <WebAppProvider
@@ -144,44 +172,34 @@ export function TransferTon() {
               </Button>
             )}
           </div>
-          {/* <FlexBoxRow>
-          <label>Amount </label>
-          <Input
-            style={{ marginRight: 8 }}
-            type="number"
-            value={tonAmount}
-            onChange={(e) => setTonAmount(e.target.value)}
-          ></Input>
-        </FlexBoxRow>
-        <FlexBoxRow>
-          <label>To </label>
-          <Input
-            style={{ marginRight: 8 }}
-            value={tonRecipient}
-            onChange={(e) => setTonRecipient(e.target.value)}
-          ></Input>
-        </FlexBoxRow>
-        <Button
-          disabled={!connected}
-          style={{ marginTop: 18 }}
-          onClick={async () => {
-            sender.send({
-              to: Address.parse(tonRecipient),
-              value: toNano(tonAmount),
-            });
-          }}
-        >
-          Transfer
-        </Button> */}
         </FlexBoxCol>
       </Card>
       {showMainBtn && (
-        <MainButton
-          text="Pay & Complete"
-          onClick={() => {
-            setApply(false);
-          }}
-        />
+        <>
+          <Button
+            className="w-full"
+            disabled={!connected}
+            onClick={async () => {
+              try {
+                // get return value
+                const result = await sender.send({
+                  to: Address.parse(tonRecipient),
+                  value: toNano(tonAmount),
+                });
+              } catch (error) {
+                console.error("Error sending transaction:", error);
+              }
+            }}
+          >
+            Pay & Participate
+          </Button>
+          <MainButton
+            text="Pay & Complete"
+            onClick={() => {
+              setApply(false);
+            }}
+          />
+        </>
       )}
       {apply && (
         <BackButton

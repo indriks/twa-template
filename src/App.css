@@ -5,4 +5,5 @@
 }
 body{
   font-family: 'Inter', sans-serif;
+  background-color: var(--tg-theme-bg-color);
 }
