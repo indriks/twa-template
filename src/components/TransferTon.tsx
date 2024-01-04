@@ -160,23 +160,26 @@ export function TransferTon() {
                   Choose Team and Tier
                 </div>
                 <div className="flex gap-2 items-baseline ">
-                  {/* <div>Choose Team: </div> */}
                   <Radio.Group
                     options={options}
                     onChange={() => {
                       onTeamChange;
-                      impactOccurred("light");
                     }}
                     value={team}
                     optionType="button"
                     buttonStyle="solid"
                     className="mt-2 w-full"
+                    onFocus={() => {
+                      impactOccurred("light");
+                    }}
                   />
                 </div>
                 <div>
                   <Radio.Group
                     onChange={() => {
                       onTierChange;
+                    }}
+                    onFocus={() => {
                       impactOccurred("light");
                     }}
                     value={tier}
@@ -219,7 +222,7 @@ export function TransferTon() {
               </div>
             )}
 
-            {!apply && (
+            {!apply && connected && (
               <Button
                 className="w-full"
                 onClick={() => {
