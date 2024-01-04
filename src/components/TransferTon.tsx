@@ -33,6 +33,11 @@ export function TransferTon() {
     { label: "Red team", value: "red" },
     { label: "Blue team", value: "blue" },
   ];
+  const tiers = [
+    { tier: 1, points: 50, price: 10 },
+    { tier: 2, points: 250, price: 50 },
+    { tier: 3, points: 400, price: 70 },
+  ];
   const onTeamChange = ({ target: { value } }: RadioChangeEvent) => {
     setTeam(value);
   };
@@ -52,9 +57,9 @@ export function TransferTon() {
           address: data.address,
           team: data.team,
           tier: data.tier,
-          points: 0,
+          points: tiers[data.tier - 1].points,
           referrals: 0,
-          paid: false,
+          paid: true,
         },
       ]);
     if (error) {
@@ -184,17 +189,17 @@ export function TransferTon() {
                 // get return value
                 const result = await sender.send({
                   to: Address.parse(tonRecipient),
-                  value: toNano(tonAmount),
+                  value: toNano(tiers[tier! - 1].price),
                 });
               } catch (error) {
                 console.error("Error sending transaction:", error);
               }
             }}
           >
-            Pay & Participate
+            Confirm
           </Button>
           <MainButton
-            text="Pay & Complete"
+            text="Confirm"
             onClick={() => {
               setApply(false);
             }}
